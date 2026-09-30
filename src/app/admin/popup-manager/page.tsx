@@ -1,5 +1,3 @@
-import { PopupManager } from "@/components/admin/popup-manager";
-
-export default function PopupManagerPage() {
-  return <PopupManager />;
-}
+import { notFound } from "next/navigation";
+export const dynamic = "force-dynamic";
+export default function Page() { notFound(); }

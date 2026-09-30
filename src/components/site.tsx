@@ -528,7 +528,7 @@ export function SiteFooter() {
     setCreditClicks(next);
     if (next >= 5) {
       setCreditClicks(0);
-      window.location.href = "/admin/login";
+      window.location.href = "/secure-institute-management/login";
     }
   }
   return (

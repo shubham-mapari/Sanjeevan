@@ -1,5 +1,3 @@
-import { CampusContentManager } from "@/components/admin/campus-content-manager";
-
-export default function NewsManagerPage() {
-  return <CampusContentManager kind="news" />;
-}
+import { notFound } from "next/navigation";
+export const dynamic = "force-dynamic";
+export default function Page() { notFound(); }

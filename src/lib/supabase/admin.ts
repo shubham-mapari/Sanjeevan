@@ -26,7 +26,7 @@ export async function requireNavigationAdmin(): Promise<AdminContext> {
   if (userError || !user) {
     return {
       response: Response.json(
-        { error: "Sign in is required. Please sign in at /admin/login." },
+        { error: "Sign in is required. Please sign in at /secure-institute-management/login." },
         { status: 401 },
       ),
     };

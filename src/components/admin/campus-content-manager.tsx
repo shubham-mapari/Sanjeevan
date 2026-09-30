@@ -254,19 +254,19 @@ export function CampusContentManager({ kind }: { kind: ContentKind }) {
   return (
     <div className="campus-cms-layout">
       <aside className="campus-cms-sidebar">
-        <Link className="campus-cms-brand" href="/admin/dashboard"><span>SG</span><strong>SANJEEVAN<br /><small>ADMINISTRATION</small></strong></Link>
+        <Link className="campus-cms-brand" href="/secure-institute-management/dashboard"><span>SG</span><strong>SANJEEVAN<br /><small>ADMINISTRATION</small></strong></Link>
         <span className="campus-cms-nav-label">CONTENT MANAGEMENT</span>
         <nav>
-          <Link href="/admin/leadership">Leadership Manager</Link>
+          <Link href="/secure-institute-management/leadership">Leadership Manager</Link>
           {modules.map(({ kind: moduleKind, label, icon: Icon }) => (
-            <Link className={kind === moduleKind ? "is-current" : ""} href={`/admin/${moduleKind}`} key={moduleKind}>
+            <Link className={kind === moduleKind ? "is-current" : ""} href={`/secure-institute-management/${moduleKind}`} key={moduleKind}>
               <Icon size={16} /> {label}
             </Link>
           ))}
-          <Link href="/admin/departments">Department Manager</Link>
-          <Link href="/admin/navigation">Navigation Manager</Link>
-          <Link href="/admin/hero">Hero Content Manager</Link>
-          <Link href="/admin/popup-manager">Popup Manager</Link>
+          <Link href="/secure-institute-management/departments">Department Manager</Link>
+          <Link href="/secure-institute-management/navigation">Navigation Manager</Link>
+          <Link href="/secure-institute-management/hero">Hero Content Manager</Link>
+          <Link href="/secure-institute-management/popup-manager">Popup Manager</Link>
         </nav>
         <Link className="campus-cms-back" href="/">View website</Link>
       </aside>

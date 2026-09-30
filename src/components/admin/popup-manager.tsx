@@ -222,17 +222,17 @@ export function PopupManager() {
   return (
     <div className="campus-cms-layout popup-manager-layout">
       <aside className="campus-cms-sidebar">
-        <Link className="campus-cms-brand" href="/admin/dashboard"><span>SG</span><strong>SANJEEVAN<br /><small>ADMINISTRATION</small></strong></Link>
+        <Link className="campus-cms-brand" href="/secure-institute-management/dashboard"><span>SG</span><strong>SANJEEVAN<br /><small>ADMINISTRATION</small></strong></Link>
         <span className="campus-cms-nav-label">CONTENT MANAGEMENT</span>
         <nav aria-label="Admin navigation">
-          <Link href="/admin/leadership">Leadership Manager</Link>
-          <Link href="/admin/news">News Manager</Link>
-          <Link href="/admin/events">Event Manager</Link>
-          <Link href="/admin/downloads">Download Manager</Link>
-          <Link href="/admin/departments">Department Manager</Link>
-          <Link href="/admin/navigation">Navigation Manager</Link>
-          <Link href="/admin/hero">Hero Content Manager</Link>
-          <Link className="is-current" href="/admin/popup-manager">Popup Manager</Link>
+          <Link href="/secure-institute-management/leadership">Leadership Manager</Link>
+          <Link href="/secure-institute-management/news">News Manager</Link>
+          <Link href="/secure-institute-management/events">Event Manager</Link>
+          <Link href="/secure-institute-management/downloads">Download Manager</Link>
+          <Link href="/secure-institute-management/departments">Department Manager</Link>
+          <Link href="/secure-institute-management/navigation">Navigation Manager</Link>
+          <Link href="/secure-institute-management/hero">Hero Content Manager</Link>
+          <Link className="is-current" href="/secure-institute-management/popup-manager">Popup Manager</Link>
         </nav>
         <Link className="campus-cms-back" href="/">View website</Link>
       </aside>

@@ -48,11 +48,11 @@ const emptyDocument: RichDocument = {
   content: [{ type: "paragraph", content: [] }],
 };
 const sideItems = [
-  { title: "Department Manager", icon: BookOpen },
-  { title: "Leadership Manager", icon: Users },
-  { title: "Navigation Manager", icon: ListTree },
-  { title: "Hero Content Manager", icon: Sliders },
-  { title: "Popup Manager", icon: ImageIcon },
+  { title: "Department Manager",   icon: BookOpen,   href: "/secure-institute-management/departments" },
+  { title: "Leadership Manager",   icon: Users,      href: "/secure-institute-management/leadership" },
+  { title: "Navigation Manager",   icon: ListTree,   href: "/secure-institute-management/navigation" },
+  { title: "Hero Content Manager", icon: Sliders,    href: "/secure-institute-management/hero" },
+  { title: "Popup Manager",        icon: ImageIcon,  href: "/secure-institute-management/popup-manager" },
 ];
 
 type MenuDraft = {
@@ -420,47 +420,16 @@ function NavigationManager() {
         </div>
         <span className="sidebar-label">WORKSPACE</span>
         <nav aria-label="Admin navigation" className="admin-side-nav">
-          {sideItems.map(({ title, icon: Icon }) =>
-            title === "Navigation Manager" ? (
-              <Link
-                href="/secure-institute-management/navigation"
-                className="side-link active"
-                key={title}
-              >
-                <Icon size={17} />
-                <span>{title}</span>
-              </Link>
-            ) : title === "Hero Content Manager" ? (
-              <Link
-                href="/secure-institute-management/hero"
-                className="side-link"
-                key={title}
-              >
-                <Icon size={17} />
-                <span>{title}</span>
-              </Link>
-            ) : title === "Popup Manager" ? (
-              <Link
-                href="/secure-institute-management/popup-manager"
-                className="side-link"
-                key={title}
-              >
-                <Icon size={17} />
-                <span>{title}</span>
-              </Link>
-            ) : (
-              <button
-                type="button"
-                className="side-link side-disabled"
-                key={title}
-                disabled
-              >
-                <Icon size={17} />
-                <span>{title}</span>
-                <small>Later</small>
-              </button>
-            ),
-          )}
+          {sideItems.map(({ title, icon: Icon, href }) => (
+            <Link
+              key={title}
+              href={href}
+              className={`side-link${title === "Navigation Manager" ? " active" : ""}`}
+            >
+              <Icon size={17} />
+              <span>{title}</span>
+            </Link>
+          ))}
         </nav>
         <div className="sidebar-bottom">
           <Link href="/" className="public-site-link">
@@ -1030,7 +999,7 @@ function MenuDialog({
   const [slug, setSlug] = useState(menu?.slug ?? "");
   const [icon, setIcon] = useState(menu?.icon ?? "");
   const [visible, setVisible] = useState(menu?.is_visible ?? true);
-  const [published, setPublished] = useState(menu?.is_published ?? false);
+  const [published, setPublished] = useState(menu?.is_published ?? true);
   const [submitting, setSubmitting] = useState(false);
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -1154,7 +1123,7 @@ function ItemDialog({
   const [icon, setIcon] = useState(item?.icon ?? "");
   const [parentId, setParentId] = useState(item?.parent_id ?? initialParentId ?? "");
   const [visible, setVisible] = useState(item?.is_visible ?? true);
-  const [published, setPublished] = useState(item?.is_published ?? false);
+  const [published, setPublished] = useState(item?.is_published ?? true);
   const [submitting, setSubmitting] = useState(false);
   const excludedParentIds = new Set<string>();
   if (item) {
@@ -1169,6 +1138,9 @@ function ItemDialog({
   );
   async function submit(event: FormEvent) {
     event.preventDefault();
+    if (!slug.trim() || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      return;
+    }
     setSubmitting(true);
     await onSave(menu, item, {
       title,

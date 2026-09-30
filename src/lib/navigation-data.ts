@@ -23,7 +23,7 @@ export async function getPublishedNavigation(): Promise<NavigationMenu[]> {
   const { data: items, error: itemError } = await supabase
     .from("menu_items")
     .select(
-      "id,menu_id,parent_id,level,icon,title,slug,sort_order,is_visible,is_published,created_at,updated_at",
+      "id,menu_id,parent_id,level,title,slug,sort_order,is_visible,is_published,created_at,updated_at",
     )
     .in(
       "menu_id",

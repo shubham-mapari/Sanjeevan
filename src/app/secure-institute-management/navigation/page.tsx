@@ -58,7 +58,6 @@ const sideItems = [
 type MenuDraft = {
   title: string;
   slug: string;
-  icon: string;
   is_visible: boolean;
   is_published: boolean;
 };
@@ -66,7 +65,6 @@ type ItemDraft = {
   title: string;
   slug: string;
   parent_id: string | null;
-  icon: string;
   is_visible: boolean;
   is_published: boolean;
 };
@@ -241,6 +239,7 @@ function NavigationManager() {
   async function saveMenu(draft: MenuDraft, menu: NavigationMenu | null) {
     const payload: MenuInput = {
       ...draft,
+      icon: menu?.icon ?? null,
       sort_order: menu?.sort_order ?? menus.length,
     };
     const saved = await runAction(
@@ -997,7 +996,6 @@ function MenuDialog({
 }) {
   const [title, setTitle] = useState(menu?.title ?? "");
   const [slug, setSlug] = useState(menu?.slug ?? "");
-  const [icon, setIcon] = useState(menu?.icon ?? "");
   const [visible, setVisible] = useState(menu?.is_visible ?? true);
   const [published, setPublished] = useState(menu?.is_published ?? true);
   const [submitting, setSubmitting] = useState(false);
@@ -1005,7 +1003,7 @@ function MenuDialog({
     event.preventDefault();
     setSubmitting(true);
     await onSave(
-      { title, slug, icon, is_visible: visible, is_published: published },
+      { title, slug, is_visible: visible, is_published: published },
       menu,
     );
     setSubmitting(false);
@@ -1042,14 +1040,6 @@ function MenuDialog({
               placeholder="about-us"
             />
           </div>
-        </label>
-        <label>
-          Icon name <small>Optional Lucide icon key</small>
-          <input
-            value={icon}
-            onChange={(event) => setIcon(event.target.value)}
-            placeholder="landmark"
-          />
         </label>
         <div className="form-switch-row">
           <span>
@@ -1120,7 +1110,6 @@ function ItemDialog({
 }) {
   const [title, setTitle] = useState(item?.title ?? "");
   const [slug, setSlug] = useState(item?.slug ?? "");
-  const [icon, setIcon] = useState(item?.icon ?? "");
   const [parentId, setParentId] = useState(item?.parent_id ?? initialParentId ?? "");
   const [visible, setVisible] = useState(item?.is_visible ?? true);
   const [published, setPublished] = useState(item?.is_published ?? true);
@@ -1146,7 +1135,6 @@ function ItemDialog({
       title,
       slug,
       parent_id: parentId || null,
-      icon,
       is_visible: visible,
       is_published: published,
     });
@@ -1182,10 +1170,6 @@ function ItemDialog({
               </option>
             ))}
           </select>
-        </label>
-        <label>
-          Icon name <small>Optional Lucide icon key</small>
-          <input value={icon} onChange={(event) => setIcon(event.target.value)} placeholder="landmark" />
         </label>
         <label>
           Page slug

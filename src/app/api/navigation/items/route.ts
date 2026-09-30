@@ -41,7 +41,6 @@ export async function POST(request: Request) {
       menu_id: body.menu_id,
       parent_id: parentId,
       level,
-      icon: body.icon || null,
       title: body.title.trim(),
       slug: body.slug,
       sort_order: Number.isInteger(body.sort_order) ? body.sort_order : 0,

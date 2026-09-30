@@ -54,7 +54,7 @@ export async function GET(request: Request) {
       ...item,
       parent_id: item.parent_id ?? null,
       level: item.level ?? 1,
-      icon: item.icon ?? null,
+      icon: null,
       page: pageByItemId.get(item.id) ?? null,
     })) as NavigationItem[],
   );

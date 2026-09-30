@@ -46,7 +46,6 @@ export async function PATCH(request: Request, { params }: Context) {
     ...(body.title === undefined ? {} : { title: body.title.trim() }),
     ...(body.slug === undefined ? {} : { slug: body.slug }),
     ...(!parentChanged && body.sort_order !== undefined ? { sort_order: body.sort_order } : {}),
-    ...(body.icon === undefined ? {} : { icon: body.icon }),
     ...(body.is_visible === undefined ? {} : { is_visible: body.is_visible }),
     ...(body.is_published === undefined
       ? {}

@@ -1,0 +1,4 @@
+.hero-photo{background-image:linear-gradient(90deg,#06142f30,#08163008),url('/campus-hero.png')}.brand-logo{display:block;width:56px;height:56px;flex:none;background:url('/logo.png') center/contain no-repeat}.footer-logo{width:49px;height:49px}
+.mobile-nav-main{display:flex;align-items:center;border-bottom:1px solid var(--line)}.mobile-nav-main>a{flex:1;border:0}.mobile-nav-main>button{width:40px;height:42px;display:grid;place-items:center;border:0;background:transparent;color:var(--navy);cursor:pointer}.mobile-subnav{padding-left:16px;background:#f8f9fb}.mobile-subnav a{font-size:10px!important}
+.mega-dynamic-links{grid-column:span 2}.mega-dynamic-links>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:25px}
+@media(max-width:600px){.brand-logo{width:46px;height:46px}.voice-orbit{right:0}.placement-visual:before{right:0}}

@@ -1,0 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+@import "./site.css";
+@import "./asset-overrides.css";
+@import "./admin/admin.css";
+@import "./admin/auth.css";
+@import "./admin/dashboard.css";
+@import "./pages/dynamic-page.css";
+@import "./hero-slider.css";
+@import "./quick-links.css";

@@ -1,0 +1,99 @@
+.popup-banner-backdrop {
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(6, 16, 34, 0.76);
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
+}
+
+.popup-banner-dialog {
+  position: relative;
+  width: min(900px, 92vw);
+  max-height: calc(100dvh - 48px);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 26px 90px rgba(0, 0, 0, 0.38);
+}
+
+.popup-banner-image-link {
+  display: block;
+  line-height: 0;
+}
+
+.popup-banner-image {
+  display: block;
+  width: 100%;
+  max-height: calc(100dvh - 48px);
+  border-radius: 10px;
+  object-fit: contain;
+}
+
+.popup-banner-close {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: rgba(8, 23, 47, 0.88);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.24);
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.popup-banner-close:hover {
+  transform: scale(1.05);
+  background: #0b1f4d;
+}
+
+.popup-banner-close:focus-visible {
+  outline: 3px solid #d7b653;
+  outline-offset: 3px;
+}
+
+.popup-banner-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@media (max-width: 600px) {
+  .popup-banner-backdrop {
+    padding: 16px;
+  }
+
+  .popup-banner-dialog {
+    width: 92vw;
+    max-height: calc(100dvh - 32px);
+  }
+
+  .popup-banner-image {
+    max-height: calc(100dvh - 32px);
+  }
+
+  .popup-banner-close {
+    top: 9px;
+    right: 9px;
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popup-banner-close {
+    transition: none;
+  }
+}

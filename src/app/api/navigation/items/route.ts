@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       is_visible: body.is_visible ?? true,
       is_published: body.is_published ?? false,
     })
-    .select("*")
+    .select("id,menu_id,parent_id,level,title,slug,sort_order,is_visible,is_published,created_at,updated_at")
     .single();
   if (error)
     return Response.json(

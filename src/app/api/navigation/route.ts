@@ -29,7 +29,7 @@ export async function GET(request: Request) {
   const { data: items, error: itemError } = menuIds.length
     ? await access.supabase
         .from("menu_items")
-        .select("*")
+        .select("id,menu_id,parent_id,level,title,slug,sort_order,is_visible,is_published,created_at,updated_at")
         .in("menu_id", menuIds)
         .order("sort_order")
     : { data: [], error: null };

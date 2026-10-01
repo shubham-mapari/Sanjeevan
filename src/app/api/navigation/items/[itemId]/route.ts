@@ -55,7 +55,7 @@ export async function PATCH(request: Request, { params }: Context) {
     .from("menu_items")
     .update(update)
     .eq("id", itemId)
-    .select("*")
+    .select("id,menu_id,parent_id,level,title,slug,sort_order,is_visible,is_published,created_at,updated_at")
     .maybeSingle();
   if (error)
     if (parentChanged) {

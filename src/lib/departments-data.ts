@@ -1,5 +1,138 @@
 import { createClient } from "@supabase/supabase-js";
 
+// ─── NEW CMS TYPES ────────────────────────────────────────────
+
+export type RichDocument = {
+  type: "doc";
+  content?: unknown[];
+};
+
+export type DepartmentFeature = {
+  id: string;
+  department_id: string;
+  name: string;
+  slug: string;
+  short_description: string | null;
+  full_description: RichDocument | null;
+  cover_image: string | null;
+  pdf_url: string | null;
+  external_url: string | null;
+  feature_icon: string | null;
+  display_order: number;
+  is_active: boolean;
+  published: boolean;
+  open_in_new_page: boolean;
+  created_at?: string;
+  updated_at?: string;
+  // joined
+  images?: DepartmentFeatureImage[];
+  documents?: DepartmentFeatureDocument[];
+};
+
+export type DepartmentFeatureImage = {
+  id: string;
+  feature_id: string;
+  image_url: string;
+  caption: string | null;
+  sort_order: number;
+  created_at?: string;
+};
+
+export type DepartmentFeatureDocument = {
+  id: string;
+  feature_id: string;
+  display_title: string;
+  file_url: string;
+  file_name: string | null;
+  file_type: string | null;
+  file_size: string | null;
+  sort_order: number;
+  created_at?: string;
+};
+
+export type DepartmentHOD = {
+  id: string;
+  department_id: string;
+  name: string;
+  designation: string | null;
+  qualification: string | null;
+  experience: string | null;
+  photo_url: string | null;
+  short_intro: string | null;
+  full_message: RichDocument | null;
+  email: string | null;
+  phone: string | null;
+  resume_pdf: string | null;
+  display_order: number;
+  is_active: boolean;
+  published: boolean;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type DepartmentFacultyMember = {
+  id: string;
+  department_id: string;
+  name: string;
+  designation: string | null;
+  qualification: string | null;
+  experience: string | null;
+  specialization: string | null;
+  photo_url: string | null;
+  email: string | null;
+  phone: string | null;
+  short_bio: string | null;
+  full_bio: RichDocument | null;
+  resume_pdf: string | null;
+  research_info: string | null;
+  publications: string | null;
+  display_order: number;
+  is_active: boolean;
+  published: boolean;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type DepartmentLab = {
+  id: string;
+  department_id: string;
+  name: string;
+  lab_code: string | null;
+  description: string | null;
+  incharge: string | null;
+  cover_image: string | null;
+  equipment: string | null;
+  facilities: string | null;
+  pdf_url: string | null;
+  external_url: string | null;
+  display_order: number;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+  images?: DepartmentLabImage[];
+};
+
+export type DepartmentLabImage = {
+  id: string;
+  lab_id: string;
+  image_url: string;
+  caption: string | null;
+  sort_order: number;
+};
+
+export type DepartmentGalleryImage = {
+  id: string;
+  department_id: string;
+  image_url: string;
+  caption: string | null;
+  album_name: string | null;
+  sort_order: number;
+  published: boolean;
+  created_at?: string;
+};
+
+// ─── EXISTING TYPES ───────────────────────────────────────────
+
 export type Laboratory = {
   name: string;
   description: string;
@@ -45,9 +178,20 @@ export type Department = {
   slug: string;
   icon_url: string | null;
   hero_image: string | null;
+  card_image?: string | null;
   description: string | null;
+  overview?: string | null;
   hod_name: string | null;
   hod_photo: string | null;
+  hod_designation?: string | null;
+  hod_qualification?: string | null;
+  hod_experience?: string | null;
+  hod_short_intro?: string | null;
+  hod_message?: string | null;
+  hod_message_rich?: RichDocument | null;
+  hod_email?: string | null;
+  hod_phone?: string | null;
+  hod_resume_pdf?: string | null;
   intake: string | null;
   duration: string | null;
   display_order: number;
@@ -745,5 +889,212 @@ export async function getAllDepartmentSlugs(): Promise<string[]> {
     return DEFAULT_DEPARTMENTS.map((d) => d.slug);
   } catch {
     return DEFAULT_DEPARTMENTS.map((d) => d.slug);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// NEW CMS DATA HELPERS
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Fetch all published+active features for a department,
+ * including their images and documents.
+ */
+export async function getDepartmentFeatures(
+  departmentId: string,
+): Promise<DepartmentFeature[]> {
+  try {
+    const supabase = getPublicClient();
+    if (!supabase) return [];
+
+    const { data: features, error } = await supabase
+      .from("department_features")
+      .select("*")
+      .eq("department_id", departmentId)
+      .eq("published", true)
+      .eq("is_active", true)
+      .order("display_order", { ascending: true });
+
+    if (error || !features) return [];
+
+    const featureIds = features.map((f) => f.id as string);
+    if (featureIds.length === 0) return features as DepartmentFeature[];
+
+    const [{ data: images }, { data: docs }] = await Promise.all([
+      supabase
+        .from("department_feature_images")
+        .select("*")
+        .in("feature_id", featureIds)
+        .order("sort_order"),
+      supabase
+        .from("department_feature_documents")
+        .select("*")
+        .in("feature_id", featureIds)
+        .order("sort_order"),
+    ]);
+
+    return features.map((f) => ({
+      ...f,
+      images: (images ?? []).filter((img) => img.feature_id === f.id),
+      documents: (docs ?? []).filter((doc) => doc.feature_id === f.id),
+    })) as DepartmentFeature[];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Fetch a single feature by department_id + slug (with images + docs).
+ */
+export async function getDepartmentFeatureBySlug(
+  departmentId: string,
+  featureSlug: string,
+): Promise<DepartmentFeature | null> {
+  try {
+    const supabase = getPublicClient();
+    if (!supabase) return null;
+
+    const { data: feature, error } = await supabase
+      .from("department_features")
+      .select("*")
+      .eq("department_id", departmentId)
+      .eq("slug", featureSlug)
+      .eq("published", true)
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (error || !feature) return null;
+
+    const [{ data: images }, { data: docs }] = await Promise.all([
+      supabase
+        .from("department_feature_images")
+        .select("*")
+        .eq("feature_id", feature.id)
+        .order("sort_order"),
+      supabase
+        .from("department_feature_documents")
+        .select("*")
+        .eq("feature_id", feature.id)
+        .order("sort_order"),
+    ]);
+
+    return {
+      ...feature,
+      images: images ?? [],
+      documents: docs ?? [],
+    } as DepartmentFeature;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fetch the published HOD for a department.
+ */
+export async function getDepartmentHOD(
+  departmentId: string,
+): Promise<DepartmentHOD | null> {
+  try {
+    const supabase = getPublicClient();
+    if (!supabase) return null;
+
+    const { data, error } = await supabase
+      .from("department_hods")
+      .select("*")
+      .eq("department_id", departmentId)
+      .eq("published", true)
+      .eq("is_active", true)
+      .order("display_order")
+      .limit(1)
+      .maybeSingle();
+
+    if (error || !data) return null;
+    return data as DepartmentHOD;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fetch all published+active faculty for a department.
+ */
+export async function getDepartmentFaculty(
+  departmentId: string,
+): Promise<DepartmentFacultyMember[]> {
+  try {
+    const supabase = getPublicClient();
+    if (!supabase) return [];
+
+    const { data, error } = await supabase
+      .from("department_faculty")
+      .select("*")
+      .eq("department_id", departmentId)
+      .eq("published", true)
+      .eq("is_active", true)
+      .order("display_order");
+
+    if (error || !data) return [];
+    return data as DepartmentFacultyMember[];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Fetch all active labs for a department (with images).
+ */
+export async function getDepartmentLabs(
+  departmentId: string,
+): Promise<DepartmentLab[]> {
+  try {
+    const supabase = getPublicClient();
+    if (!supabase) return [];
+
+    const { data: labs, error } = await supabase
+      .from("department_labs")
+      .select("*")
+      .eq("department_id", departmentId)
+      .eq("is_active", true)
+      .order("display_order");
+
+    if (error || !labs || labs.length === 0) return [];
+
+    const labIds = labs.map((l) => l.id as string);
+    const { data: images } = await supabase
+      .from("department_lab_images")
+      .select("*")
+      .in("lab_id", labIds)
+      .order("sort_order");
+
+    return labs.map((l) => ({
+      ...l,
+      images: (images ?? []).filter((img) => img.lab_id === l.id),
+    })) as DepartmentLab[];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Fetch published gallery images for a department.
+ */
+export async function getDepartmentGallery(
+  departmentId: string,
+): Promise<DepartmentGalleryImage[]> {
+  try {
+    const supabase = getPublicClient();
+    if (!supabase) return [];
+
+    const { data, error } = await supabase
+      .from("department_gallery")
+      .select("*")
+      .eq("department_id", departmentId)
+      .eq("published", true)
+      .order("sort_order");
+
+    if (error || !data) return [];
+    return data as DepartmentGalleryImage[];
+  } catch {
+    return [];
   }
 }

@@ -19,35 +19,17 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-  const parentId = body.parent_id ?? null;
-  let level = 1;
-  if (parentId) {
-    const { data: parent, error: parentError } = await access.supabase
-      .from("menu_items")
-      .select("menu_id,level")
-      .eq("id", parentId)
-      .maybeSingle();
-    if (parentError || !parent)
-      return Response.json({ error: "Parent dropdown was not found." }, { status: 400 });
-    if (parent.menu_id !== body.menu_id)
-      return Response.json({ error: "Parent must belong to the same menu." }, { status: 400 });
-    if (parent.level >= 3)
-      return Response.json({ error: "Navigation supports a maximum of three levels." }, { status: 400 });
-    level = parent.level + 1;
-  }
   const { data, error } = await access.supabase
     .from("menu_items")
     .insert({
       menu_id: body.menu_id,
-      parent_id: parentId,
-      level,
       title: body.title.trim(),
       slug: body.slug,
       sort_order: Number.isInteger(body.sort_order) ? body.sort_order : 0,
       is_visible: body.is_visible ?? true,
       is_published: body.is_published ?? false,
     })
-    .select("id,menu_id,parent_id,level,title,slug,sort_order,is_visible,is_published,created_at,updated_at")
+    .select("id,menu_id,title,slug,sort_order,is_visible,is_published,created_at,updated_at")
     .single();
   if (error)
     return Response.json(

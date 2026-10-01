@@ -65,7 +65,6 @@ type MenuDraft = {
 type ItemDraft = {
   title: string;
   slug: string;
-  parent_id: string | null;
   is_visible: boolean;
   is_published: boolean;
 };
@@ -150,7 +149,6 @@ function NavigationManager() {
   const [itemDraft, setItemDraft] = useState<{
     menu: NavigationMenu;
     item: NavigationItem | null;
-    parentId: string | null;
   } | null>(null);
   const [pageDraft, setPageDraft] = useState<{
     menu: NavigationMenu;
@@ -283,13 +281,10 @@ function NavigationManager() {
     item: NavigationItem | null,
     draft: ItemDraft,
   ) {
-    const siblings = draft.parent_id
-      ? flattenNavigationItems(menu.items).find((entry) => entry.id === draft.parent_id)?.children ?? []
-      : menu.items;
     const payload: MenuItemInput = {
       ...draft,
       menu_id: menu.id,
-      sort_order: item?.sort_order ?? siblings.length,
+      sort_order: item?.sort_order ?? menu.items.length,
     };
     const saved = await runAction(
       () =>
@@ -555,7 +550,7 @@ function NavigationManager() {
                         }
                         onEdit={() => setMenuDraft(menu)}
                         onDelete={() => deleteMenu(menu)}
-                        onAddItem={() => setItemDraft({ menu, item: null, parentId: null })}
+                        onAddItem={() => setItemDraft({ menu, item: null })}
                         onToggle={(field, value) =>
                           toggleMenu(menu, field, value)
                         }
@@ -566,8 +561,8 @@ function NavigationManager() {
                             void reorderMenus(dragMenuId, menu.id);
                           setDragMenuId(null);
                         }}
-                        onItemEdit={(item) => setItemDraft({ menu, item, parentId: item.parent_id })}
-                        onAddChild={(item) => setItemDraft({ menu, item: null, parentId: item.id })}
+                        onItemEdit={(item) => setItemDraft({ menu, item })}
+                        onAddChild={(item) => setItemDraft({ menu, item: null })}
                         expandedItemIds={expandedItemIds}
                         onToggleItemExpanded={(id) => setExpandedItemIds((current) => {
                           const next = new Set(current);
@@ -637,8 +632,6 @@ function NavigationManager() {
         <ItemDialog
           menu={itemDraft.menu}
           item={itemDraft.item}
-          items={flattenNavigationItems(itemDraft.menu.items)}
-          initialParentId={itemDraft.parentId}
           onClose={() => setItemDraft(null)}
           onSave={saveItem}
         />
@@ -686,11 +679,11 @@ function NavigationTreeItem({
     <div className="navigation-tree-node">
       <div
         className="dropdown-item-row navigation-tree-row"
-        style={{ marginLeft: `${Math.max(0, item.level - 1) * 20}px` }}
+        style={{ marginLeft: `${Math.max(0, (item.level ?? 1) - 1) * 20}px` }}
         draggable
         onDragStart={() => onDragStart(item.id)}
         onDragOver={(event) => event.preventDefault()}
-        onDrop={(event) => { event.preventDefault(); event.stopPropagation(); onDrop(item.id, item.parent_id); }}
+        onDrop={(event) => { event.preventDefault(); event.stopPropagation(); onDrop(item.id, item.parent_id ?? null); }}
       >
         <GripVertical size={15} className="item-grip" />
         {hasChildren ? (
@@ -698,7 +691,7 @@ function NavigationTreeItem({
             {expanded ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
           </button>
         ) : <span className="tree-expand-spacer" />}
-        <span className="tree-level-tag">L{item.level}</span>
+        <span className="tree-level-tag">L{item.level ?? 1}</span>
         <div className="dropdown-item-name">
           <strong>{item.title}</strong>
           <small>/{item.slug}</small>
@@ -706,7 +699,7 @@ function NavigationTreeItem({
         <StatusTag published={item.is_published && !!item.page?.published} visible={item.is_visible} />
         <Toggle checked={item.is_visible} label={`${item.is_visible ? "Hide" : "Show"} ${item.title}`} onChange={(value) => onToggle(item, "is_visible", value)} />
         <Toggle checked={item.is_published} label={`${item.is_published ? "Unpublish" : "Publish"} ${item.title}`} onChange={(value) => onToggle(item, "is_published", value)} />
-        {item.level < 3 && <button className="row-action" type="button" onClick={() => onAddChild(item)}><Plus size={13} /> Add child</button>}
+        {(item.level ?? 1) < 3 && <button className="row-action" type="button" onClick={() => onAddChild(item)}><Plus size={13} /> Add child</button>}
         <button className="row-action" type="button" onClick={() => onPageEdit(item)}><FileText size={14} /> {item.page ? "Edit page" : "Add page"}</button>
         <button className="row-action" type="button" onClick={() => onEdit(item)}><Pencil size={14} /> Edit</button>
         <button className="action-more" type="button" aria-label={`Delete ${item.title}`} onClick={() => onDelete(item)}><Trash2 size={14} /></button>
@@ -1049,15 +1042,11 @@ function MenuDialog({
 function ItemDialog({
   menu,
   item,
-  items,
-  initialParentId,
   onClose,
   onSave,
 }: {
   menu: NavigationMenu;
   item: NavigationItem | null;
-  items: NavigationItem[];
-  initialParentId: string | null;
   onClose: () => void;
   onSave: (
     menu: NavigationMenu,
@@ -1067,21 +1056,10 @@ function ItemDialog({
 }) {
   const [title, setTitle] = useState(item?.title ?? "");
   const [slug, setSlug] = useState(item?.slug ?? "");
-  const [parentId, setParentId] = useState(item?.parent_id ?? initialParentId ?? "");
   const [visible, setVisible] = useState(item?.is_visible ?? true);
   const [published, setPublished] = useState(item?.is_published ?? true);
   const [submitting, setSubmitting] = useState(false);
-  const excludedParentIds = new Set<string>();
-  if (item) {
-    const collectDescendants = (node: NavigationItem) => {
-      excludedParentIds.add(node.id);
-      node.children.forEach(collectDescendants);
-    };
-    collectDescendants(item);
-  }
-  const availableParents = items.filter(
-    (candidate) => candidate.level < 3 && !excludedParentIds.has(candidate.id),
-  );
+
   async function submit(event: FormEvent) {
     event.preventDefault();
     if (!slug.trim() || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
@@ -1091,7 +1069,6 @@ function ItemDialog({
     await onSave(menu, item, {
       title,
       slug,
-      parent_id: parentId || null,
       is_visible: visible,
       is_published: published,
     });
@@ -1099,8 +1076,8 @@ function ItemDialog({
   }
   return (
     <ModalFrame
-      title={item ? "Edit navigation item" : initialParentId ? "Add child item" : "Add dropdown"}
-      eyebrow={`UNDER ${(items.find((candidate) => candidate.id === parentId)?.title ?? menu.title).toUpperCase()}`}
+      title={item ? "Edit dropdown" : "Add dropdown"}
+      eyebrow={`UNDER ${menu.title.toUpperCase()}`}
       onClose={onClose}
     >
       <form className="admin-form" onSubmit={submit}>
@@ -1116,17 +1093,6 @@ function ItemDialog({
             }}
             placeholder="e.g. Vision & Mission"
           />
-        </label>
-        <label>
-          Parent item <small>Choose a top-level dropdown or change this itemΓÇÖs parent</small>
-          <select value={parentId} onChange={(event) => setParentId(event.target.value)}>
-            <option value="">Top-level dropdown under {menu.title}</option>
-            {availableParents.map((candidate) => (
-              <option key={candidate.id} value={candidate.id}>
-                {"ΓÇö ".repeat(candidate.level)}{candidate.title} (level {candidate.level + 1})
-              </option>
-            ))}
-          </select>
         </label>
         <label>
           Page slug

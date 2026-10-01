@@ -6,8 +6,15 @@ const allowedTypes = new Set([
   "image/webp",
   "application/pdf",
   "video/mp4",
+  // Office documents
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ]);
-const maxBytes = 15 * 1024 * 1024;
+const maxBytes = 25 * 1024 * 1024; // raised to 25 MB for documents
 
 export async function POST(request: Request) {
   const access = await requireNavigationAdmin();
@@ -21,12 +28,12 @@ export async function POST(request: Request) {
     );
   if (!allowedTypes.has(file.type))
     return Response.json(
-      { error: "Supported formats: JPEG, PNG, WebP, PDF, and MP4." },
+      { error: "Supported formats: JPEG, PNG, WebP, PDF, MP4, DOC, DOCX, PPT, PPTX, XLS, XLSX." },
       { status: 415 },
     );
   if (file.size > maxBytes)
     return Response.json(
-      { error: "Files must be 15 MB or smaller." },
+      { error: "Files must be 25 MB or smaller." },
       { status: 413 },
     );
 

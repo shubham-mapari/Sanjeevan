@@ -54,9 +54,9 @@ export type NavigationPage = {
 export type NavigationItem = {
   id: string;
   menu_id: string;
-  parent_id: string | null;
-  level: number;
-  icon: string | null;
+  parent_id?: string | null;
+  level?: number;
+  icon?: string | null;
   title: string;
   slug: string;
   sort_order: number;
@@ -66,6 +66,15 @@ export type NavigationItem = {
   updated_at: string;
   page?: NavigationPage | null;
   children: NavigationItem[];
+};
+
+export type MenuItemInput = Pick<
+  NavigationItem,
+  "menu_id" | "title" | "slug" | "sort_order" | "is_visible" | "is_published"
+> & {
+  parent_id?: string | null;
+  level?: number;
+  icon?: string | null;
 };
 
 export type NavigationMenu = {
@@ -85,14 +94,6 @@ export type MenuInput = Pick<
   NavigationMenu,
   "title" | "slug" | "icon" | "sort_order" | "is_visible" | "is_published"
 >;
-export type MenuItemInput = Pick<
-  NavigationItem,
-  "menu_id" | "title" | "slug" | "sort_order" | "is_visible" | "is_published"
-> & {
-  parent_id?: string | null;
-  level?: number;
-  icon?: string | null;
-};
 export type PageInput = Omit<
   NavigationPage,
   "id" | "created_at" | "updated_at"

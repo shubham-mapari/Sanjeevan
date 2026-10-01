@@ -29,7 +29,7 @@ export async function GET(request: Request) {
   const { data: items, error: itemError } = menuIds.length
     ? await access.supabase
         .from("menu_items")
-        .select("id,menu_id,parent_id,level,title,slug,sort_order,is_visible,is_published,created_at,updated_at")
+        .select("id,menu_id,title,slug,sort_order,is_visible,is_published,created_at,updated_at")
         .in("menu_id", menuIds)
         .order("sort_order")
     : { data: [], error: null };
@@ -52,8 +52,8 @@ export async function GET(request: Request) {
   const tree = buildNavigationTree(
     (items ?? []).map((item) => ({
       ...item,
-      parent_id: item.parent_id ?? null,
-      level: item.level ?? 1,
+      parent_id: null,
+      level: 1,
       icon: null,
       page: pageByItemId.get(item.id) ?? null,
     })) as NavigationItem[],
@@ -62,7 +62,7 @@ export async function GET(request: Request) {
     (menus ?? []).map((menu) => ({
       ...menu,
       items: tree.filter(
-        (item) => item.menu_id === menu.id && item.parent_id === null,
+        (item) => item.menu_id === menu.id,
       ),
     })),
   );

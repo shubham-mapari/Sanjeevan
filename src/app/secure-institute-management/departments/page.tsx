@@ -1743,6 +1743,16 @@ export default function DepartmentManagerPage() {
                               <ExternalLink size={12} />
                             </Link>
 
+                            {/* Manage CMS */}
+                            <Link
+                              href={`/secure-institute-management/departments/${dept.id}`}
+                              className="admin-small-button"
+                              title="Manage Features, HOD, Faculty, Labs"
+                              style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, padding: "0 8px", height: 26, background: "#0b1f4d", color: "#fff", borderRadius: 4, textDecoration: "none" }}
+                            >
+                              <BookOpen size={11} /> Manage CMS
+                            </Link>
+
                             {/* Edit */}
                             <button
                               type="button"

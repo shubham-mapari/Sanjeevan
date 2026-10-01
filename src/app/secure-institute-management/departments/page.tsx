@@ -44,6 +44,7 @@ import {
 } from "@/lib/departments-data";
 import { DepartmentIcon, ICON_OPTIONS } from "@/components/department-icon";
 import "@/app/admin/admin.css";
+import { AdminShell } from "@/components/admin/admin-shell";
 import "@/app/departments/departments.css";
 
 const sideItems = [
@@ -1412,56 +1413,7 @@ export default function DepartmentManagerPage() {
   const totalActive = departments.filter((d) => d.is_active).length;
 
   return (
-    <div className="admin-shell">
-      {/* Sidebar */}
-      <aside className="admin-sidebar">
-        <div className="admin-brand">
-          <div className="admin-brand-mark">S</div>
-          <span>
-            <strong>Sanjeevan CMS</strong>
-            <small>ADMIN CONSOLE</small>
-          </span>
-        </div>
-
-        <div className="admin-workspace">
-          <div className="workspace-badge">SG</div>
-          <span>
-            <strong>Main Campus Portal</strong>
-            <small>Production Environment</small>
-          </span>
-        </div>
-
-        <span className="sidebar-label">CORE MODULES</span>
-        <nav className="admin-side-nav">
-          {sideItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.title}
-                href={item.href}
-                className={`side-link ${item.active ? "active" : ""}`}
-              >
-                <Icon size={15} />
-                <span>{item.title}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="sidebar-bottom">
-          <div className="help-card">
-            <CircleHelp size={16} />
-            <strong>Department Manager</strong>
-            <span>Changes reflect instantly on public website cards.</span>
-          </div>
-          <Link href="/" target="_blank" className="public-site-link">
-            <span>View Public Website</span>
-            <ExternalLink size={12} />
-          </Link>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
+    <AdminShell currentSection="departments">
       <main className="admin-main">
         {/* Topbar */}
         <header className="admin-topbar">
@@ -1835,6 +1787,6 @@ export default function DepartmentManagerPage() {
           onSave={handleSaveDepartment}
         />
       )}
-    </div>
+    </AdminShell>
   );
 }

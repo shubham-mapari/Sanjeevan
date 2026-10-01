@@ -1,14 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState, type DragEvent, type FormEvent } from "react";
-import Link from "next/link";
 import {
-  CalendarDays,
-  Download,
   FileText,
   GripVertical,
   LoaderCircle,
-  Newspaper,
   Pin,
   Plus,
   Save,
@@ -18,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 import type { CampusContentItem, ContentKind } from "@/lib/campus-content";
-import "@/app/admin/campus-content-admin.css";
+import { AdminShell, type AdminSection } from "@/components/admin/admin-shell";
 
 type Field = {
   name: string;
@@ -68,11 +64,6 @@ const managerConfig: Record<ContentKind, { title: string; singular: string; fiel
   },
 };
 
-const modules: { kind: ContentKind; label: string; icon: typeof Newspaper }[] = [
-  { kind: "news", label: "News Manager", icon: Newspaper },
-  { kind: "events", label: "Event Manager", icon: CalendarDays },
-  { kind: "downloads", label: "Download Manager", icon: Download },
-];
 
 function emptyDraft(kind: ContentKind): Draft {
   const now = new Date().toISOString().slice(0, 10);
@@ -252,25 +243,7 @@ export function CampusContentManager({ kind }: { kind: ContentKind }) {
   );
 
   return (
-    <div className="campus-cms-layout">
-      <aside className="campus-cms-sidebar">
-        <Link className="campus-cms-brand" href="/secure-institute-management/dashboard"><span>SG</span><strong>SANJEEVAN<br /><small>ADMINISTRATION</small></strong></Link>
-        <span className="campus-cms-nav-label">CONTENT MANAGEMENT</span>
-        <nav>
-          <Link href="/secure-institute-management/leadership">Leadership Manager</Link>
-          {modules.map(({ kind: moduleKind, label, icon: Icon }) => (
-            <Link className={kind === moduleKind ? "is-current" : ""} href={`/secure-institute-management/${moduleKind}`} key={moduleKind}>
-              <Icon size={16} /> {label}
-            </Link>
-          ))}
-          <Link href="/secure-institute-management/departments">Department Manager</Link>
-          <Link href="/secure-institute-management/navigation">Navigation Manager</Link>
-          <Link href="/secure-institute-management/hero">Hero Content Manager</Link>
-          <Link href="/secure-institute-management/popup-manager">Popup Manager</Link>
-        </nav>
-        <Link className="campus-cms-back" href="/">View website</Link>
-      </aside>
-
+    <AdminShell currentSection={kind as AdminSection}>
       <main className="campus-cms-main">
         <header className="campus-cms-topbar"><span>CMS / {config.title}</span><span>Supabase connected</span></header>
         <div className="campus-cms-content">
@@ -357,6 +330,6 @@ export function CampusContentManager({ kind }: { kind: ContentKind }) {
           </form>
         </div>
       )}
-    </div>
+    </AdminShell>
   );
 }

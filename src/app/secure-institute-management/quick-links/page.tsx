@@ -30,6 +30,7 @@ import { RichContent } from "@/components/rich-content";
 import type { RichDocument } from "@/lib/navigation-types";
 import type { QuickLink } from "@/lib/quick-links-data";
 import "@/app/admin/quick-links/quick-links-admin.css";
+import { AdminShell } from "@/components/admin/admin-shell";
 
 const EMPTY_DESCRIPTION: RichDocument = {
   type: "doc",
@@ -316,6 +317,7 @@ export default function QuickLinksAdminPage() {
   }
 
   return (
+    <AdminShell currentSection="quick-links">
     <main className="quick-links-admin page-wrap">
       <header className="quick-links-admin-header">
         <div><Link className="quick-links-back" href="/secure-institute-management/dashboard"><ArrowLeft size={15} /> Dashboard</Link><span className="quick-links-kicker">HOMEPAGE CMS</span><h1>Quick Links Manager</h1><p>Manage the homepage sliding window and its information pages.</p></div>
@@ -346,5 +348,6 @@ export default function QuickLinksAdminPage() {
       {editing !== undefined && <QuickLinkEditor key={editing?.id ?? "new"} item={editing} onClose={() => setEditing(undefined)} onSave={saveItem} />}
       {previewing && <QuickLinkPreview draft={previewing} onClose={() => setPreviewing(null)} />}
     </main>
+    </AdminShell>
   );
 }

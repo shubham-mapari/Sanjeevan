@@ -29,6 +29,7 @@ import { RichContent } from "@/components/rich-content";
 import type { Leader, LeaderDesignation } from "@/lib/leaders-data";
 import type { RichDocument } from "@/lib/navigation-types";
 import "@/app/admin/leadership/leadership-admin.css";
+import { AdminShell } from "@/components/admin/admin-shell";
 
 const emptyMessage: RichDocument = {
   type: "doc",
@@ -300,21 +301,7 @@ export default function LeadershipAdminPage() {
   }
 
   return (
-    <div className="leadership-admin-layout">
-      <aside className="leadership-admin-sidebar">
-        <Link className="leadership-admin-brand" href="/secure-institute-management/dashboard"><span>SG</span><strong>SANJEEVAN<br /><small>ADMINISTRATION</small></strong></Link>
-        <span className="leadership-admin-nav-label">CONTENT MANAGEMENT</span>
-        <nav>
-          <Link href="/secure-institute-management/dashboard"><LayoutDashboard size={17} /> Dashboard</Link>
-          <Link href="/secure-institute-management/departments">Department Manager</Link>
-          <Link className="is-current" href="/secure-institute-management/leadership">Leadership Manager</Link>
-          <Link href="/secure-institute-management/navigation">Navigation Manager</Link>
-          <Link href="/secure-institute-management/hero">Hero Content Manager</Link>
-          <Link href="/secure-institute-management/popup-manager">Popup Manager</Link>
-        </nav>
-        <Link className="leadership-back-home" href="/"><ArrowLeft size={15} /> View website</Link>
-      </aside>
-
+    <AdminShell currentSection="leadership">
       <main className="leadership-admin-main">
         <header className="leadership-admin-topbar"><span>CMS / Leadership</span><span>Supabase connected</span></header>
         <div className="leadership-admin-content">
@@ -352,6 +339,6 @@ export default function LeadershipAdminPage() {
 
       {editing !== undefined && <LeaderEditor key={editing?.id ?? "new"} leader={editing} onClose={() => setEditing(undefined)} onSave={saveLeader} />}
       {previewing && <LeaderPreview leader={previewing} onClose={() => setPreviewing(null)} />}
-    </div>
+    </AdminShell>
   );
 }

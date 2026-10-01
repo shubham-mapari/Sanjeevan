@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import {
   Eye,
   Image as ImageIcon,
@@ -17,7 +16,7 @@ import {
 import { PopupBannerModal } from "@/components/popup-banner-modal";
 import { getInstitutionDate } from "@/lib/popup-banner-date";
 import type { PopupBanner } from "@/lib/popup-banners";
-import "@/app/admin/campus-content-admin.css";
+import { AdminShell } from "@/components/admin/admin-shell";
 import "@/app/admin/popup-manager.css";
 
 type PopupDraft = {
@@ -220,23 +219,7 @@ export function PopupManager() {
   );
 
   return (
-    <div className="campus-cms-layout popup-manager-layout">
-      <aside className="campus-cms-sidebar">
-        <Link className="campus-cms-brand" href="/secure-institute-management/dashboard"><span>SG</span><strong>SANJEEVAN<br /><small>ADMINISTRATION</small></strong></Link>
-        <span className="campus-cms-nav-label">CONTENT MANAGEMENT</span>
-        <nav aria-label="Admin navigation">
-          <Link href="/secure-institute-management/leadership">Leadership Manager</Link>
-          <Link href="/secure-institute-management/news">News Manager</Link>
-          <Link href="/secure-institute-management/events">Event Manager</Link>
-          <Link href="/secure-institute-management/downloads">Download Manager</Link>
-          <Link href="/secure-institute-management/departments">Department Manager</Link>
-          <Link href="/secure-institute-management/navigation">Navigation Manager</Link>
-          <Link href="/secure-institute-management/hero">Hero Content Manager</Link>
-          <Link className="is-current" href="/secure-institute-management/popup-manager">Popup Manager</Link>
-        </nav>
-        <Link className="campus-cms-back" href="/">View website</Link>
-      </aside>
-
+    <AdminShell currentSection="popup-manager">
       <main className="campus-cms-main">
         <header className="campus-cms-topbar"><span>CMS / Popup Manager</span><span>Supabase connected</span></header>
         <div className="campus-cms-content">
@@ -322,6 +305,6 @@ export function PopupManager() {
       )}
 
       <PopupBannerModal banner={preview} onClose={() => setPreview(null)} />
-    </div>
+      </AdminShell>
   );
 }

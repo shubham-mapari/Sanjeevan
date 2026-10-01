@@ -42,6 +42,7 @@ import type {
 } from "@/lib/navigation-types";
 import { flattenNavigationItems } from "@/lib/navigation-tree";
 import "@/app/admin/navigation/navigation-tree.css";
+import { AdminShell } from "@/components/admin/admin-shell";
 
 const emptyDocument: RichDocument = {
   type: "doc",
@@ -399,51 +400,7 @@ function NavigationManager() {
   ).length;
 
   return (
-    <div className="admin-shell">
-      <aside className="admin-sidebar">
-        <Link href="/" className="admin-brand">
-          <span className="admin-brand-mark">S</span>
-          <span>
-            <strong>Sanjeevan</strong>
-            <small>An autonomous engineering institute</small>
-          </span>
-          <PanelLeftClose size={16} />
-        </Link>
-        <div className="admin-workspace">
-          <span className="workspace-badge">SG</span>
-          <span>
-            <strong>Sanjeevan Group</strong>
-            <small>Institution workspace</small>
-          </span>
-          <ChevronDown size={14} />
-        </div>
-        <span className="sidebar-label">WORKSPACE</span>
-        <nav aria-label="Admin navigation" className="admin-side-nav">
-          {sideItems.map(({ title, icon: Icon, href }) => (
-            <Link
-              key={title}
-              href={href}
-              className={`side-link${title === "Navigation Manager" ? " active" : ""}`}
-            >
-              <Icon size={17} />
-              <span>{title}</span>
-            </Link>
-          ))}
-        </nav>
-        <div className="sidebar-bottom">
-          <Link href="/" className="public-site-link">
-            View public website <ArrowUpRight size={14} />
-          </Link>
-          <div className="admin-profile">
-            <span className="profile-avatar">SG</span>
-            <span>
-              <strong>Institute Admin</strong>
-              <small>Navigation workspace</small>
-            </span>
-            <MoreHorizontal size={18} />
-          </div>
-        </div>
-      </aside>
+    <AdminShell currentSection="navigation">
       <main className="admin-main">
         <header className="admin-topbar">
           <div className="admin-breadcrumb">
@@ -695,7 +652,7 @@ function NavigationManager() {
           onError={(text) => setMessage({ kind: "error", text })}
         />
       )}
-    </div>
+    </AdminShell>
   );
 }
 

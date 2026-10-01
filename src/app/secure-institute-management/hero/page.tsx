@@ -36,6 +36,7 @@ import {
   X,
 } from "lucide-react";
 import { type HeroSlide } from "@/lib/hero-slides-data";
+import { AdminShell } from "@/components/admin/admin-shell";
 
 type SlideDraft = Omit<HeroSlide, "id" | "created_at" | "updated_at">;
 
@@ -844,72 +845,7 @@ export default function HeroContentManager() {
   const publishedCount = slides.filter((s) => s.published && s.is_active).length;
 
   return (
-    <div className="admin-shell">
-      {/* ΓöÇΓöÇ Standard Admin Sidebar matching navigation.tsx ΓöÇΓöÇ */}
-      <aside className="admin-sidebar">
-        <Link href="/" className="admin-brand">
-          <span className="admin-brand-mark">S</span>
-          <span>
-            <strong>Sanjeevan</strong>
-            <small>INSTITUTE ADMIN</small>
-          </span>
-          <PanelLeftClose size={16} />
-        </Link>
-        <div className="admin-workspace">
-          <span className="workspace-badge">SG</span>
-          <span>
-            <strong>Sanjeevan Group</strong>
-            <small>Institution workspace</small>
-          </span>
-          <ChevronDown size={14} />
-        </div>
-        <span className="sidebar-label">WORKSPACE</span>
-        <nav aria-label="Admin navigation" className="admin-side-nav">
-          {sideItems.map(({ title, icon: Icon, href, active }) =>
-            href ? (
-              <Link
-                href={href}
-                className={`side-link ${active ? "active" : ""}`}
-                key={title}
-              >
-                <Icon size={17} />
-                <span>{title}</span>
-              </Link>
-            ) : (
-              <button
-                type="button"
-                className="side-link side-disabled"
-                key={title}
-                disabled
-              >
-                <Icon size={17} />
-                <span>{title}</span>
-                <small>Later</small>
-              </button>
-            ),
-          )}
-        </nav>
-        <div className="sidebar-bottom">
-          <div className="help-card">
-            <CircleHelp size={16} />
-            <strong>Need a hand?</strong>
-            <span>Admin help and setup</span>
-          </div>
-          <Link href="/" className="public-site-link">
-            View public website <ArrowUpRight size={14} />
-          </Link>
-          <div className="admin-profile">
-            <span className="profile-avatar">SG</span>
-            <span>
-              <strong>Institute Admin</strong>
-              <small>Hero Content Manager</small>
-            </span>
-            <MoreHorizontal size={18} />
-          </div>
-        </div>
-      </aside>
-
-      {/* ΓöÇΓöÇ Main Area ΓöÇΓöÇ */}
+    <AdminShell currentSection="hero">
       <main className="admin-main">
         <header className="admin-topbar">
           <div className="admin-breadcrumb">
@@ -1345,6 +1281,6 @@ export default function HeroContentManager() {
           onSave={saveSlide}
         />
       )}
-    </div>
+    </AdminShell>
   );
 }
